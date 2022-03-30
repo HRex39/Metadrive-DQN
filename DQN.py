@@ -4,7 +4,7 @@ Copyright (c) 2022 HuangChenrui<hcr2077@outlook.com>
 '''
 
 # Net
-from Net import *
+from DQN_Net import *
 
 # Pytorch
 import torch
@@ -29,7 +29,7 @@ MEMORY_CAPACITY = 20000
 class DQN(object):
     def __init__(self, is_train=True):
         self.IS_TRAIN = is_train
-        self.eval_net, self.target_net = Net(), Net()
+        self.eval_net, self.target_net = DQN_Net(), DQN_Net()
         self.learn_step_counter = 0     # for target updating
         self.memory_counter = 0         # for storing memory
         # (s,a,r,s_)一共 2 * state + 2 个列,因为动作是唯一确定的

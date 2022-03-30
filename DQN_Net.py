@@ -13,7 +13,7 @@ N_ACTIONS = 3*3 # Action Space is an array[steering, acceleration] like [-0.5,0.
 N_STATES = 19 # observation dim
 N_LAYERS = [256, 256]
 
-class Net(nn.Module):
+class DQN_Net(nn.Module):
     def __init__(self, ):
         super().__init__()
         self.fc1 = nn.Linear(N_STATES, N_LAYERS[0])
