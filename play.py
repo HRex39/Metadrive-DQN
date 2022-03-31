@@ -21,10 +21,11 @@ config = dict(
         random_lane_num=False,
         use_lateral=True,
         # map="SCrROXT",
-        map="OCXT",
-        # start_seed=random.randint(0, 1000),
-        # map=4,  # seven block
-        # environment_num=100,
+        # map="OCXT",
+        # map="OOOOOOOO",
+        start_seed=random.randint(0, 1000),
+        map=4,  # seven block
+        environment_num=100,
     )
 
 def choose_steering(action_index):
@@ -46,7 +47,7 @@ def choose_acceleration(action_index):
 if __name__ == '__main__':
     env = MetaDriveEnv(config)
     dqn = DQN(is_train=False)
-    dqn.load("./check_points_swing.tar")
+    dqn.load("./check_points.tar")
     print('--------------\nLoading experience...\n--------------')
 
     for i_episode in range(100000):

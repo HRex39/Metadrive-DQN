@@ -1,10 +1,13 @@
 '''
 MIT License
 Copyright (c) 2022 HuangChenrui<hcr2077@outlook.com>
+
+Double DQN don't need to change DQN_Net,
+but only need to change the policy to choose action.
 '''
 
 # Net
-from DQN_Net import *
+from DoubleDQN_Net import *
 
 # Pytorch
 import torch
@@ -24,12 +27,12 @@ EPSILON = 0.1               # greedy policy
 SETTING_TIMES = 500         # greedy setting times 
 GAMMA = 0.9                 # reward discount
 TARGET_REPLACE_ITER = 1000   # target update frequency
-MEMORY_CAPACITY = 20000
+MEMORY_CAPACITY = 50000
 
-class DQN(object):
+class DoubleDQN(object):
     def __init__(self, is_train=True):
         self.IS_TRAIN = is_train
-        self.eval_net, self.target_net = DQN_Net(), DQN_Net()
+        self.eval_net, self.target_net = DoubleDQN_Net(), DoubleDQN_Net()
         self.learn_step_counter = 0     # for target updating
         self.memory_counter = 0         # for storing memory
         # (s,a,r,s_)一共 2 * state + 2 个列,因为动作是唯一确定的
@@ -47,7 +50,8 @@ class DQN(object):
         self.MEMORY_CAPACITY = MEMORY_CAPACITY
         self.N_STATES = self.eval_net.N_STATES
 
-    # 此时只选择action的序号，具体的action放在主函数中确定
+    # 此时只选择action的序号，具体的action和epsilon的更改放在主函数中确定
+    # epsilon greedy
     def choose_action(self, x):
 
         x = torch.unsqueeze(torch.FloatTensor(x), 0) # add 1 dimension to input state x
@@ -69,7 +73,7 @@ class DQN(object):
         index = self.memory_counter % MEMORY_CAPACITY
         self.memory[index, :] = transition
         self.memory_counter += 1
-    
+
     def learn(self):
         # update the target network every fixed steps
         if self.learn_step_counter % TARGET_REPLACE_ITER == 0:
@@ -84,9 +88,14 @@ class DQN(object):
         b_r = torch.FloatTensor(b_memory[:, self.eval_net.N_STATES+1:self.eval_net.N_STATES+2])
         b_s_ = torch.FloatTensor(b_memory[:, -self.eval_net.N_STATES:])
 
-        # q_eval w.r.t the action in experience
+        # diff between DQN
         q_eval = self.eval_net(b_s).gather(1, b_a)  # dim=1是横向的意思 shape (batch, 1)
-        q_next = self.target_net(b_s_).detach()     # detach from graph, don't backpropagate
+        q_eval_max_a = self.eval_net(b_s_).detach()     # detach from graph, don't backpropagate
+        # q_eval_max_a.max(1) returns the max value along the axis=1 and its corresponding index
+        eval_max_a_index = q_eval_max_a.max(1)[1].view(BATCH_SIZE, 1)
+
+        q_next = self.target_net(b_s_).gather(1, eval_max_a_index)
+
         q_target = b_r + GAMMA * q_next.max(1)[0].view(BATCH_SIZE, 1)   # shape (batch, 1)
         loss = self.loss_func(q_eval, q_target)
 
