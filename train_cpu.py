@@ -29,7 +29,7 @@ config = dict(
         # map="SCrROXT",
         # map="OCXT",
         start_seed=random.randint(0, 1000),
-        map=4,  # seven block
+        map=7,  # seven block
         environment_num=100,
     )
 
@@ -101,8 +101,8 @@ if __name__ == '__main__':
                 # if game is over, then skip the while loop.
                 if best_reward <= total_reward:
                     best_reward = total_reward
-                    dqn.save("./check_points.tar")
-                if i_episode % 500 == 0:
+                    dqn.save("./"+str(round(best_reward,2))+"check_points.tar")
+                if i_episode % 1000 == 999:
                     dqn.save("./"+str(i_episode)+".tar")
                 print('Ep: ', i_episode, ' |', 'Ep_r: ', round(total_reward, 2), ' |', 'Best_r: ', best_reward)
                 break
