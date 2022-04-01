@@ -96,7 +96,7 @@ class DoubleDQN(object):
 
         q_next = self.target_net(b_s_).gather(1, eval_max_a_index)
 
-        q_target = b_r + GAMMA * q_next.max(1)[0].view(BATCH_SIZE, 1)   # shape (batch, 1)
+        q_target = b_r + GAMMA * q_next   # shape (batch, 1)
         loss = self.loss_func(q_eval, q_target)
 
         self.optimizer.zero_grad()

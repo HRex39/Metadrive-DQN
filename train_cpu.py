@@ -69,6 +69,7 @@ if __name__ == '__main__':
         total_reward = 0
         total_action_value = 0
         action_counter = 0 
+        reward_counter = 0
         while True:
             # take action based on the current state
             action_index, action_value = dqn.choose_action(s)
@@ -90,6 +91,7 @@ if __name__ == '__main__':
             dqn.store_transition(s, action_index, reward, s_)
 
             total_reward += reward
+            reward_counter += 1
             
             # if the experience repaly buffer is filled, 
             # DQN begins to learn or update its parameters.       
@@ -108,6 +110,7 @@ if __name__ == '__main__':
                 # use next state to update the current state. 
                 s = s_
         dqn.writer.add_scalar('Ep_r', total_reward, i_episode)
-        dqn.writer.add_scalar('Ave_Q_value', total_action_value/action_counter, i_episode)  
+        dqn.writer.add_scalar('Ave_r', total_reward/reward_counter, i_episode)
+        dqn.writer.add_scalar('Ave_Q_value', total_action_value/action_counter, i_episode)
 
 
