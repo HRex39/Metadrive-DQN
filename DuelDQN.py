@@ -21,13 +21,13 @@ from torch.utils.tensorboard import SummaryWriter
 import numpy as np
 
 # Hyper Parameters
-BATCH_SIZE = 32
+BATCH_SIZE = 64
 LR = 0.001                   # learning rate
 EPSILON = 0.1               # greedy policy
 SETTING_TIMES = 500         # greedy setting times 
 GAMMA = 0.9                 # reward discount
 TARGET_REPLACE_ITER = 1000   # target update frequency
-MEMORY_CAPACITY = 20000
+MEMORY_CAPACITY = 50000
 
 class DuelDQN(object):
     def __init__(self, is_train=True):
@@ -87,10 +87,15 @@ class DuelDQN(object):
         b_r = torch.FloatTensor(b_memory[:, self.eval_net.N_STATES+1:self.eval_net.N_STATES+2])
         b_s_ = torch.FloatTensor(b_memory[:, -self.eval_net.N_STATES:])
 
-        # q_eval w.r.t the action in experience
+        # using DDQN Policy
         q_eval = self.eval_net(b_s).gather(1, b_a)  # dim=1是横向的意思 shape (batch, 1)
-        q_next = self.target_net(b_s_).detach()     # detach from graph, don't backpropagate
-        q_target = b_r + GAMMA * q_next.max(1)[0].view(BATCH_SIZE, 1)   # shape (batch, 1)
+        q_eval_max_a = self.eval_net(b_s_).detach()     # detach from graph, don't backpropagate
+        # q_eval_max_a.max(1) returns the max value along the axis=1 and its corresponding index
+        eval_max_a_index = q_eval_max_a.max(1)[1].view(BATCH_SIZE, 1)
+
+        q_next = self.target_net(b_s_).gather(1, eval_max_a_index)
+
+        q_target = b_r + GAMMA * q_next   # shape (batch, 1)
         loss = self.loss_func(q_eval, q_target)
 
         self.optimizer.zero_grad()

@@ -103,10 +103,10 @@ if __name__ == '__main__':
                 # if game is over, then skip the while loop.
                 if best_reward <= total_reward:
                     best_reward = total_reward
-                    dqn.save("./"+str(round(best_reward,2))+"check_points.tar")
+                    dqn.save("./"+str(round(best_reward))+"check_points.tar")
                 if i_episode % 1000 == 999:
                     dqn.save("./"+str(i_episode)+".tar")
-                print('Ep: ', i_episode, ' |', 'Ep_r: ', round(total_reward, 2), ' |', 'Best_r: ', best_reward)
+                print('Ep: ', i_episode, ' |', 'Ep_r: ', round(total_reward, 2), ' |', 'Best_r: ', round(best_reward, 2))
                 break
             else:
                 # use next state to update the current state. 

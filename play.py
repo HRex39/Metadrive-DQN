@@ -9,7 +9,9 @@ from metadrive import MetaDriveEnv
 # Other Lib
 import numpy as np
 import random
+from DQN import *
 from DoubleDQN import *
+from DuelDQN import *
 from math import floor
 
 # Init Metadrive Env
@@ -46,7 +48,7 @@ def choose_acceleration(action_index):
 
 if __name__ == '__main__':
     env = MetaDriveEnv(config)
-    dqn = DoubleDQN(is_train=False)
+    dqn = DuelDQN(is_train=False)
     dqn.load("./check_points.tar")
     print('--------------\nLoading experience...\n--------------')
 
