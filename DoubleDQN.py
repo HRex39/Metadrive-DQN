@@ -60,7 +60,7 @@ class DoubleDQN(object):
         x = torch.unsqueeze(torch.FloatTensor(x), 0).to(device) # add 1 dimension to input state x
 
         if np.random.uniform() < self.EPSILON: # greedy
-            action_value = self.eval_net.forward(x)
+            action_value = self.eval_net.forward(x).cpu()
             # torch.max() 函数会返回两个tensor，第一个tensor是每行的最大值；第二个tensor是每行最大值的索引。
             action_index = torch.max(action_value, 1)[1].data.numpy()[0] # 此时已经转变为index的形式
             action_max_value = torch.max(action_value, 1)[0].data.numpy()[0]

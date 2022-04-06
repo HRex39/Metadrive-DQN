@@ -61,7 +61,7 @@ if __name__ == '__main__':
     print('--------------\nCollecting experience...\n--------------')
     best_reward = 0
 
-    for i_episode in range(100000):
+    for i_episode in range(200000):
         if i_episode <= dqn.SETTING_TIMES:
             dqn.EPSILON = 0.1 + i_episode / dqn.SETTING_TIMES * (0.9 - 0.1)
         s = env.reset()
