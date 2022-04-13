@@ -22,7 +22,7 @@ import numpy as np
 
 # Hyper Parameters
 BATCH_SIZE = 64
-LR = 0.001                   # learning rate
+LR = 2e-4                   # learning rate
 EPSILON = 0.1               # greedy policy
 SETTING_TIMES = 500         # greedy setting times 
 GAMMA = 0.9                 # reward discount

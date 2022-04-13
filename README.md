@@ -9,7 +9,7 @@ Metadrive-simulator Agent using DQN
 ## Usage
 1. train
 ```
-python3 train_cpu.py
+python3 train.py
 tensorboard --logdir=./log --port <your port>
 ```
 
