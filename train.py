@@ -23,16 +23,20 @@ from math import floor
 config = dict(
         use_render=False,
         manual_control=False,
-        traffic_density=0.0,
+        traffic_density=0.1,
         random_agent_model=False,
         random_lane_width=False,
         random_lane_num=False,
         use_lateral=True,
-        # map="SCrROXT",
+        map="SCrROXT",
         # map="OCXT",
-        start_seed=random.randint(0, 1000),
-        map=7,  # seven block
-        environment_num=100,
+        # start_seed=random.randint(0, 1000),
+        # map=7,  # seven block
+        # environment_num=100,
+
+        offscreen_render=True, # Image
+        vehicle_config = dict(rgb_camera=(80,80)),
+        rgb_clip=True
     )
 
 
@@ -57,7 +61,7 @@ def choose_acceleration(action_index):
 '''
 if __name__ == '__main__':
     env = MetaDriveEnv(config)
-    dqn = DuelDQN(is_train=True)
+    dqn = DQN(is_train=True)
     print('--------------\nCollecting experience...\n--------------')
     best_reward = 0
 
@@ -65,8 +69,9 @@ if __name__ == '__main__':
         if i_episode <= dqn.SETTING_TIMES:
             dqn.EPSILON = 0.1 + i_episode / dqn.SETTING_TIMES * (0.9 - 0.1)
         s = env.reset()
-        s = s[: dqn.N_STATES]
+        s = s["image"].transpose(2,1,0).astype(np.float32) # 80*80*4 -> 4*80*80
         env.vehicle.expert_takeover = True
+
         # indirect params
         total_reward = 0
         total_action_value = 0
@@ -86,9 +91,8 @@ if __name__ == '__main__':
             action = np.array([steering, acceleration])
             # step
             s_, reward, done, info = env.step(action)
-            # slice s and s_
-            s = s[: dqn.N_STATES] 
-            s_ = s_[: dqn.N_STATES]
+            # transpose s_
+            s_ = s_["image"].transpose(2,1,0).astype(np.float32) # 80*80*4 -> 4*80*80
             # store the transitions of states
             dqn.store_transition(s, action_index, reward, s_)
 
