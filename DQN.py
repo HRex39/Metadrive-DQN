@@ -19,13 +19,13 @@ import numpy as np
 from collections import deque
 
 # Hyper Parameters
-BATCH_SIZE = 2
+BATCH_SIZE = 32
 LR = 2e-4                   # learning rate
 EPSILON = 0.1               # greedy policy
 SETTING_TIMES = 500         # greedy setting times 
 GAMMA = 0.9                 # reward discount
 TARGET_REPLACE_ITER = 1000   # target update frequency
-MEMORY_CAPACITY = 100
+MEMORY_CAPACITY = 20000
 
 # GPU device
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -71,7 +71,6 @@ class DQN(object):
     # store memory
     def store_transition(self, s, a, r, s_):
         index = self.memory_counter % MEMORY_CAPACITY
-        print(index)
         self.memory[index*4] = s
         self.memory[index*4+1] = a
         self.memory[index*4+2] = r
