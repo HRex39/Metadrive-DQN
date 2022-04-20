@@ -28,11 +28,11 @@ config = dict(
         random_lane_width=False,
         random_lane_num=False,
         use_lateral=True,
-        map="SCrROXT",
+        # map="SCrROXT",
         # map="OCXT",
-        # start_seed=random.randint(0, 1000),
-        # map=7,  # seven block
-        # environment_num=100,
+        start_seed=random.randint(0, 1000),
+        map=7,  # seven block
+        environment_num=100,
 
         offscreen_render=True, # Image
         vehicle_config = dict(rgb_camera=(80,80)),
@@ -115,6 +115,8 @@ if __name__ == '__main__':
             else:
                 # use next state to update the current state. 
                 s = s_
+        if action_counter == 0:
+            action_counter = 1
         dqn.writer.add_scalar('Ep_r', total_reward, i_episode)
         dqn.writer.add_scalar('Ave_r', total_reward/reward_counter, i_episode)
         dqn.writer.add_scalar('Ave_Q_value', total_action_value/action_counter, i_episode)

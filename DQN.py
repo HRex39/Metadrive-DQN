@@ -115,8 +115,6 @@ class DQN(object):
         loss = self.loss_func(q_eval, q_target)
 
         self.optimizer.zero_grad()
-        torch.autograd.set_detect_anomaly(True)
-        
         loss.backward()
         self.optimizer.step()
         if (self.IS_TRAIN):
